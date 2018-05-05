@@ -23,7 +23,8 @@ In this repo you'll find:
 
 To run the app:
 
-open the **xcodeproj** file in Xcode 9 and run it on a device with iOS 11 or better installed.
+1. Extract YOLOv3 CoreML model in YOLOv3 CoreML model folder and copy to YOLOv3-CoreML/YOLOv3-CoreML folder.
+2. Open the **xcodeproj** file in Xcode 9 and run it on a device with iOS 11 or better installed.
 
 The reported "elapsed" time is how long it takes the YOLO neural net to process a single image. The FPS is the actual throughput achieved by the app.
 
