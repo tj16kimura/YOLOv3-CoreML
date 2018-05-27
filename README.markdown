@@ -1,13 +1,9 @@
-# YOLO with Core ML
+# YOLOv3 with Core ML
 
 This repo was forked and modified from [hollance/YOLO-CoreML-MPSNNGraph](https://github.com/hollance/YOLO-CoreML-MPSNNGraph). Some changes I made:
 
 1. Add YOLOv3 model.
 2. Only keep Keras converter.
-
-TODO:
-1. This version only used 13x13x(3x(80+4+1)) output, YOLOv3 has 3 scale outputs. Should fix output calculation use k-means clustering to determine bounding box priors.
->We just sort of chose 9 clusters and 3 scales arbitrarily and then divide up the clusters evenly across scales. On the COCO dataset the 9 clusters were: (10×13),(16×30),(33×23),(30×61),(62×45),(59×119),(116 × 90),(156 × 198),(373 × 326).
 
 
 ## About YOLO object detection

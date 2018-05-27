@@ -171,7 +171,7 @@ class ViewController: UIViewController {
     if let observations = request.results as? [VNCoreMLFeatureValueObservation],
        let features = observations.first?.featureValue.multiArrayValue {
 
-      let boundingBoxes = yolo.computeBoundingBoxes(features: features)
+        let boundingBoxes = yolo.computeBoundingBoxes(features: [features, features, features])
       let elapsed = CACurrentMediaTime() - startTimes.remove(at: 0)
       showOnMainThread(boundingBoxes, elapsed)
     }
@@ -252,8 +252,8 @@ extension ViewController: VideoCaptureDelegate {
       // instead of on the VideoCapture queue. We use the semaphore to block
       // the capture queue and drop frames when Core ML can't keep up.
       DispatchQueue.global().async {
-        //self.predict(pixelBuffer: pixelBuffer)
-        self.predictUsingVision(pixelBuffer: pixelBuffer)
+        self.predict(pixelBuffer: pixelBuffer)
+        //self.predictUsingVision(pixelBuffer: pixelBuffer)
       }
     }
   }
