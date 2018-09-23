@@ -15,7 +15,7 @@ let labels = [
     "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"
 ]
 
-let anchors: [[Float]] = [[116,90,  156,198,  373,326], [30,61,  62,45,  59,119], [10,13,  16,30,  33,23]]
+let anchors: [[Float]] = [[81,82,  135,169,  344,319], [10,14,  23,27,  37,58]]
 
 /**
   Removes bounding boxes that overlap too much with other boxes that have

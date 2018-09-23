@@ -17,13 +17,13 @@ class YOLO {
     let rect: CGRect
   }
 
-  let model = YOLOv3()
+  let model = Yolov3_tiny_1()
 
   public init() { }
 
   public func predict(image: CVPixelBuffer) throws -> [Prediction] {
     if let output = try? model.prediction(input1: image) {
-      return computeBoundingBoxes(features: [output.output1, output.output2, output.output3])
+      return computeBoundingBoxes(features: [output.conv2d_10, output.conv2d_13])
     } else {
       return []
     }
@@ -32,7 +32,6 @@ class YOLO {
   public func computeBoundingBoxes(features: [MLMultiArray]) -> [Prediction] {
     assert(features[0].count == 255*13*13)
     assert(features[1].count == 255*26*26)
-    assert(features[2].count == 255*52*52)
 
     var predictions = [Prediction]()
 
@@ -52,8 +51,8 @@ class YOLO {
     // NOTE: It turns out that accessing the elements in the multi-array as
     // `features[[channel, cy, cx] as [NSNumber]].floatValue` is kinda slow.
     // It's much faster to use direct memory access to the features.
-    var gridHeight = [13, 26, 52]
-    var gridWidth = [13, 26, 52]
+    var gridHeight = [13, 26]
+    var gridWidth = [13, 26]
     
     var featurePointer = UnsafeMutablePointer<Double>(OpaquePointer(features[0].dataPointer))
     var channelStride = features[0].strides[0].intValue
@@ -64,7 +63,7 @@ class YOLO {
       return channel*channelStride + y*yStride + x*xStride
     }
 
-    for i in 0..<3 {
+    for i in 0..<2 {
         featurePointer = UnsafeMutablePointer<Double>(OpaquePointer(features[i].dataPointer))
         channelStride = features[i].strides[0].intValue
         yStride = features[i].strides[1].intValue
