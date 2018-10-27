@@ -89,8 +89,9 @@ class YOLO {
                     // (0-12) and multiply by the number of pixels per grid cell (32).
                     // Now x and y represent center of the bounding box in the original
                     // 416x416 image space.
-                    let x = (Float(cx) * blockSize + sigmoid(tx))
-                    let y = (Float(cy) * blockSize + sigmoid(ty))
+                    let scale = powf(2.0,Float(i)) // scale pos by 2^i where i is the scale pyramid level
+                    let x = (Float(cx) * blockSize + sigmoid(tx))/scale
+                    let y = (Float(cy) * blockSize + sigmoid(ty))/scale
                     
                     // The size of the bounding box, tw and th, is predicted relative to
                     // the size of an "anchor" box. Here we also transform the width and
