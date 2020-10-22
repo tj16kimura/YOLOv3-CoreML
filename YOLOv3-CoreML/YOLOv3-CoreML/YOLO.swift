@@ -17,7 +17,7 @@ class YOLO {
     let rect: CGRect
   }
 
-  let model = YOLOv3()
+  let model = yolov3()
 
   public init() { }
 
@@ -56,19 +56,21 @@ class YOLO {
     var gridWidth = [13, 26, 52]
     
     var featurePointer = UnsafeMutablePointer<Double>(OpaquePointer(features[0].dataPointer))
-    var channelStride = features[0].strides[0].intValue
-    var yStride = features[0].strides[1].intValue
-    var xStride = features[0].strides[2].intValue
+    debugPrint(features[0])
+    var channelStride = features[0].strides[2].intValue
+    var yStride = features[0].strides[3].intValue
+    var xStride = features[0].strides[4].intValue
 
     func offset(_ channel: Int, _ x: Int, _ y: Int) -> Int {
-      return channel*channelStride + y*yStride + x*xStride
+//      return channel*channelStride + y*yStride + x*xStride
+      return channel*xStride*yStride + y*xStride + x
     }
 
     for i in 0..<3 {
         featurePointer = UnsafeMutablePointer<Double>(OpaquePointer(features[i].dataPointer))
-        channelStride = features[i].strides[0].intValue
-        yStride = features[i].strides[1].intValue
-        xStride = features[i].strides[2].intValue
+        channelStride = features[i].strides[2].intValue
+        yStride = features[i].strides[3].intValue
+        xStride = features[i].strides[4].intValue
         for cy in 0..<gridHeight[i] {
             for cx in 0..<gridWidth[i] {
                 for b in 0..<boxesPerCell {
@@ -92,7 +94,7 @@ class YOLO {
                     let scale = powf(2.0,Float(i)) // scale pos by 2^i where i is the scale pyramid level
                     let x = (Float(cx) * blockSize + sigmoid(tx))/scale
                     let y = (Float(cy) * blockSize + sigmoid(ty))/scale
-                    
+
                     // The size of the bounding box, tw and th, is predicted relative to
                     // the size of an "anchor" box. Here we also transform the width and
                     // height into the original 416x416 image space.
@@ -102,6 +104,7 @@ class YOLO {
                     // The confidence value for the bounding box is given by tc. We use
                     // the logistic sigmoid to turn this into a percentage.
                     let confidence = sigmoid(tc)
+//                    print(confidence)
                     
                     // Gather the predicted classes for this anchor box and softmax them,
                     // so we can interpret these numbers as percentages.
@@ -114,6 +117,7 @@ class YOLO {
                         classes[c] = Float(featurePointer[offset(channel + 5 + c, cx, cy)])
                     }
                     classes = softmax(classes)
+//                    debugPrint(classes)
                     
                     // Find the index of the class with the largest score.
                     let (detectedClass, bestClassScore) = classes.argmax()
